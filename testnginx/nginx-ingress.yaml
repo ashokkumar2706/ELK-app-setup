@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elk-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/app-root: /
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: kiban.uksouth.cloudapp.azure.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: kibana-logging
+              servicePort: 5601

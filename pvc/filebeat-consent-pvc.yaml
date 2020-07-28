@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+  creationTimestamp: "2019-12-28T06:48:19Z"
+  finalizers:
+  - kubernetes.io/pvc-protection
+  name: filebeat-consent-pvc
+  namespace: wso2
+  resourceVersion: "10479661"
+  selfLink: /api/v1/namespaces/wso2/persistentvolumeclaims/filebeat-consent-pvc
+  uid: 08545734-293e-11ea-9539-62e868a82fc8
+spec:
+  accessModes:
+  - ReadWriteMany
+  dataSource: null
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  volumeName: filebeat-consent-pv
+status:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 2Gi
+  phase: Bound

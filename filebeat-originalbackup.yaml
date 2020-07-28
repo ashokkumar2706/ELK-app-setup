@@ -1,0 +1,133 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: DaemonSet
+  metadata:
+    creationTimestamp: "2020-01-21T09:13:04Z"
+    generation: 1
+    labels:
+      k8s-app: filebeat
+    name: filebeat
+    namespace: wso2
+    resourceVersion: "29470349"
+    selfLink: /apis/extensions/v1beta1/namespaces/wso2/daemonsets/filebeat
+    uid: 3ac42326-3c2e-11ea-9539-62e868a82fc8
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        k8s-app: filebeat
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          k8s-app: filebeat
+      spec:
+        containers:
+        - args:
+          - -c
+          - /etc/filebeat.yml
+          - -e
+          env:
+          - name: ELASTICSEARCH_HOST
+            value: 10.101.0.131
+          - name: ELASTICSEARCH_PORT
+            value: "9200"
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          image: docker.elastic.co/beats/filebeat:7.3.0
+          imagePullPolicy: IfNotPresent
+          name: filebeat
+          resources:
+            limits:
+              memory: 400Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          securityContext:
+            runAsUser: 0
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/filebeat.yml
+            name: config
+            readOnly: true
+            subPath: filebeat.yml
+          - mountPath: /usr/share/filebeat/data
+            name: data
+          - mountPath: /var/lib/docker/containers
+            name: varlibdockercontainers
+            readOnly: true
+          - mountPath: /root/app-log/accounts
+            name: filebeat-accounts
+            readOnly: true
+          - mountPath: /root/app-log/balances
+            name: filebeat-balances
+            readOnly: true
+          - mountPath: /root/app-log/consent
+            name: filebeat-consent
+            readOnly: true
+          - mountPath: /root/app-log/t24
+            name: filebeat-t24
+            readOnly: true
+          - mountPath: /root/app-log/transactions
+            name: filebeat-transactions
+            readOnly: true
+        dnsPolicy: ClusterFirstWithHostNet
+        hostNetwork: true
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: filebeat
+        serviceAccountName: filebeat
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 384
+            name: filebeat-config
+          name: config
+        - hostPath:
+            path: /var/lib/docker/containers
+            type: ""
+          name: varlibdockercontainers
+        - hostPath:
+            path: /var/log
+            type: ""
+          name: varlog
+        - name: filebeat-accounts
+          persistentVolumeClaim:
+            claimName: filebeat-accounts-pvc
+        - name: filebeat-balances
+          persistentVolumeClaim:
+            claimName: filebeat-balances-pvc
+        - name: filebeat-consent
+          persistentVolumeClaim:
+            claimName: filebeat-consent-pvc
+        - name: filebeat-t24
+          persistentVolumeClaim:
+            claimName: filebeat-t24-pvc
+        - name: filebeat-transactions
+          persistentVolumeClaim:
+            claimName: filebeat-transactions-pvc
+        - hostPath:
+            path: /var/lib/filebeat-data
+            type: DirectoryOrCreate
+          name: data
+    templateGeneration: 1
+    updateStrategy:
+      type: OnDelete
+  status:
+    currentNumberScheduled: 4
+    desiredNumberScheduled: 4
+    numberAvailable: 4
+    numberMisscheduled: 0
+    numberReady: 4
+    observedGeneration: 1
+    updatedNumberScheduled: 4
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
